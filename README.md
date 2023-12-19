@@ -7,7 +7,7 @@ Visualization of shapes: Polygons, Lines, Curves
 1. SimpleDDA
 2. Sutherland Hodgman
 3. Hermite Curve
-4. Spline Curve
+4. Bezier Curve
 Provides an interactive graphical interface for drawing and manipulating shapes.
 ## Dependencies
 QT
