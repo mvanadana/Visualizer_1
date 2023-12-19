@@ -1,2 +1,0 @@
-#define GRID_API __declspec(dllexport)
-#define GRID_API __declspec(dllimport)
