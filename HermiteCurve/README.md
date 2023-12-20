@@ -14,3 +14,4 @@ Ensure the HermiteCurve library or source files are available.
 Create an instance of the HermiteCurve class.
 Use the evaluateHermite method to compute the interpolated point on the curve at a given parameter value.
 Utilize the generated points for rendering or path calculations.
+![HermiteCurve](https://github.com/mvanadana/Visualizer_1/assets/149364066/035b1883-b0b2-447e-8361-8438c08a4c39)
