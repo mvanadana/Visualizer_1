@@ -66,11 +66,11 @@
   </PropertyGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">
     <ClCompile>
-      <AdditionalIncludeDirectories>E:\VandanaWorkspace\Visualizer_1\Grid;E:\VandanaWorkspace\Visualizer_1\SimpleDDA;E:\VandanaWorkspace\Visualizer_1\SutherlandHodgeman;E:\VandanaWorkspace\Visualizer_1\HermiteCurve;E:\VandanaWorkspace\Visualizer_1\BeizerCurve;E:\VandanaWorkspace\Visualizer_1\Geometry;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+      <AdditionalIncludeDirectories>E:\VandanaWorkspace\Visualizer_1\BSplineCurve;E:\VandanaWorkspace\Visualizer_1\SimpleDDA;E:\VandanaWorkspace\Visualizer_1\SutherlandHodgeman;E:\VandanaWorkspace\Visualizer_1\HermiteCurve;E:\VandanaWorkspace\Visualizer_1\BeizerCurve;E:\VandanaWorkspace\Visualizer_1\Geometry;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
     </ClCompile>
     <Link>
       <AdditionalLibraryDirectories>E:\VandanaWorkspace\Visualizer_1\x64\Debug;%(AdditionalLibraryDirectories)</AdditionalLibraryDirectories>
-      <AdditionalDependencies>Grid.lib;SimpleDDA.lib;Geometry.lib;SutherlandHodgeman.lib;HermiteCurve.lib;BeizerCurve.lib;%(AdditionalDependencies)</AdditionalDependencies>
+      <AdditionalDependencies>BSplineCurve.lib;SimpleDDA.lib;Geometry.lib;SutherlandHodgeman.lib;HermiteCurve.lib;BeizerCurve.lib;%(AdditionalDependencies)</AdditionalDependencies>
     </Link>
   </ItemDefinitionGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)' == 'Debug|x64'" Label="Configuration">

@@ -5,14 +5,13 @@
 #include <QOpenGLPaintDevice>
 #include <QOpenGLShaderProgram>
 #include <QPainter>
-#include "SimpleDDA.h"
+
 #include "SutherlandHodgeman.h"
-#include "Grid.h"
-#include "BeizerCurve.h"
 #include "HermiteCurve.h"
-#include <QDebug>
-
-
+#include "BeizerCurve.h"
+#include "BSplineCurve.h"
+#include "SimpleDDA.h"
+#include "Grid.h"
 
 OpenGLWindow::OpenGLWindow(const QColor& background, QWidget* parent) :
     mBackground(background), mClippingPolygon({})
@@ -20,6 +19,7 @@ OpenGLWindow::OpenGLWindow(const QColor& background, QWidget* parent) :
     setParent(parent);
     setMinimumSize(300, 250);
 }
+
 OpenGLWindow::~OpenGLWindow()
 {
     reset();
@@ -27,7 +27,6 @@ OpenGLWindow::~OpenGLWindow()
 
 void OpenGLWindow::reset()
 {
-    // And now release all OpenGL resources.
     makeCurrent();
     delete mProgram;
     mProgram = nullptr;
@@ -41,78 +40,22 @@ void OpenGLWindow::reset()
     QObject::disconnect(mContextWatchConnection);
 }
 
-
 void OpenGLWindow::paintGL()
 {
-
     glClear(GL_COLOR_BUFFER_BIT);
 
     mProgram->bind();
 
-    QMatrix4x4 matrix;
-    matrix.ortho(-10.0f, 10.0f, -10.0f, 10.0f, 0.1f, 100.0f);
-    matrix.translate(0, 0, -2);
-
-    mProgram->setUniformValue(m_matrixUniform, matrix);
-
-    
-    Grid grid(vertices, colors, mGridSize);
-    
-    /*
-    vector<float> qv;
-    qv.push_back(line.p1().x());
-    qv.push_back(line.p1().y());
-    qv.push_back(line.p2().x());
-    qv.push_back(line.p2().y());
-    QVector3D fillColor(1.0f, 0.0f, 1.0f);
-   // fillSquare(qv, fillColor);*/
-
-
+    setupMatrix();
    
-/*
-    for (int i = 0; i < qv.size()-2; i = i+2)
-    {
-        vertices << mPixelVertices[i];
-        vertices << mPixelVertices[i + 1];
-        colors << fillColor.x() << fillColor.y() << fillColor.z();
-    }*/
 
+    addClippingPolygonVertices(vertices, colors);
+    addPolygonsVertices(vertices, colors);
+    addLinesVertices(vertices, colors);
 
-    std::vector<Line> clipingPolygonLines = mClippingPolygon.getShape();
-    for (int j = 0; j < clipingPolygonLines.size(); j++) {
-        vertices << clipingPolygonLines.at(j).p1().x() << clipingPolygonLines.at(j).p1().y();
-        vertices << clipingPolygonLines.at(j).p2().x() << clipingPolygonLines.at(j).p2().y();
-        colors << 1.0f << 1.0f << 0.0f;
-        colors << 1.0f << 1.0f << 0.0f;
-    }
+    drawVertices(vertices, colors);
 
-    for (int i = 0; i < mPolygons.size(); i++) {
-        std::vector<Line> lines = mPolygons.at(i).getShape();
-        for (int j = 0; j < lines.size(); j++) {
-            vertices << lines.at(j).p1().x() << lines.at(j).p1().y();
-            vertices << lines.at(j).p2().x() << lines.at(j).p2().y();
-            colors << 1.0f << 1.0f << 1.0f;
-            colors << 1.0f << 1.0f << 1.0f;
-        }
-    }
-
-    for (int j = 0; j < mLines.size(); j++) {
-        vertices << mLines.at(j).p1().x() << mLines.at(j).p1().y();
-        vertices << mLines.at(j).p2().x() << mLines.at(j).p2().y();
-        colors << 0.0f << 1.0f << 1.0f;
-        colors << 0.0f << 1.0f << 1.0f;
-    }
-
-    glVertexAttribPointer(m_posAttr, 2, GL_FLOAT, GL_FALSE, 0, vertices.data());
-    glVertexAttribPointer(m_colAttr, 3, GL_FLOAT, GL_FALSE, 0, colors.data());
-
-    glEnableVertexAttribArray(m_posAttr);
-    glEnableVertexAttribArray(m_colAttr);
-
-    glDrawArrays(GL_LINES, 0, vertices.size() / 2);
-
-    glDisableVertexAttribArray(m_colAttr);
-    glDisableVertexAttribArray(m_posAttr);
+    mProgram->release();
 }
 
 void OpenGLWindow::clipPolygons()
@@ -124,117 +67,113 @@ void OpenGLWindow::clipPolygons()
     emit shapesUpdated();
 }
 
-void OpenGLWindow::createFill() {
 
-    int i = 0;
-    while (i < mPixelVertices.size()) {
-        std::vector<float>qv;
-        qv.push_back(mPixelVertices[i]);
-        i++;
-        qv.push_back(mPixelVertices[i]);
-        i++;
-        qv.push_back(mPixelVertices[i]);
-        i++;
-        qv.push_back(mPixelVertices[i]);
-        i++;
-        QVector3D fillColor(1.0f, 1.0f, 0.0f);
-        fillSquare(qv, fillColor);
-    }
-    
-}
-void OpenGLWindow::fillSquare(vector<float>& squareVertices, const QVector3D& fillColor)
-{
-
-
-    QVector<GLfloat> vertices;
-    QVector<GLfloat> colors;
-
-    // Convert QVector<QVector2D> to QVector<GLfloat>
-    /*for (const auto& vertex : squareVertices)
-    {
-        vertices << vertex;
-        vertices << vertex;
-        colors << fillColor.x() << fillColor.y() << fillColor.z();
-    }*/
-    for (int i = 0; i < squareVertices.size()-2; i=i+2)
-    {
-        vertices << squareVertices[i];
-        vertices << squareVertices[i + 1];
-        colors << fillColor.x() << fillColor.y() << fillColor.z();
-    }
-    // Prepare the data for rendering
-    GLfloat* verticesData = vertices.data();
-    GLfloat* colorsData = colors.data();
-
-    glVertexAttribPointer(m_posAttr, 2, GL_FLOAT, GL_FALSE, 0, verticesData);
-    glVertexAttribPointer(m_colAttr, 3, GL_FLOAT, GL_FALSE, 0, colorsData);
-
-    glEnableVertexAttribArray(m_posAttr);
-    glEnableVertexAttribArray(m_colAttr);
-
-    glDrawArrays(GL_TRIANGLE_FAN, 0, vertices.size() / 2);
-
-    glDisableVertexAttribArray(m_colAttr);
-    glDisableVertexAttribArray(m_posAttr);
-}
 void OpenGLWindow::addClippingPolygon(Shape* s)
 {
     mClippingPolygon = *s;
     emit shapesUpdated();
 }
+
 void OpenGLWindow::addPolygons(Shape* s)
 {
     mPolygons.push_back(*s);
     emit shapesUpdated();
 }
-void OpenGLWindow::addLines(Line l)
+
+void OpenGLWindow::addLines(Line line)
 {
+    SimpleDDA sdd;
+    sdd.drawLineBySimpleDDA(line, mPixelVertices);
+    createFill(mPixelVertices);
 
-    mPixelVertices.clear();
-    SimpleDDA sdda;
-    sdda.drawLineBySimpleDDA(l, mPixelVertices);
-    createFill();
-
+    
 }
-
-void OpenGLWindow::drawGrid(int gridSize)
+void OpenGLWindow::drawGrid(int gridsize)
 {
-    mGridSize = gridSize;
+    mGridSize = gridsize;
+    Grid grid(vertices, colors, mGridSize);
+    emit shapesUpdated();
 }
-void OpenGLWindow::drawPolygon(Shape s, QVector<GLfloat>& vertices, QVector<GLfloat>& colors)
+void OpenGLWindow::addHermiteCurve(std::vector<Point> points)
 {
-    for (int i = 0; i < s.getSize(); i++)
-    {
-        Line l = s.getShape().at(i);
-        vertices << l.p1().x() << l.p1().y();
-        vertices << l.p2().x() << l.p2().y();
+    HermiteCurve bs(points);
+    std::vector<Point> hermitePoints = bs.calculateHermite();
 
-        colors << 1.0f << 0.0f << 0.0f;
-        colors << 1.0f << 0.0f << 0.0f;
+    if (hermitePoints.size() < 2) {
+        return;
     }
+    addCurveLines(hermitePoints);
+    emit shapesUpdated();
 }
 
-void OpenGLWindow::setRegion(double xMin, double yMin, double xMax, double yMax)
+void OpenGLWindow::addBezierCurve(std::vector<Point> points)
 {
-    x_min = xMin;
-    x_max = xMax;
-    y_min = yMin;
-    y_max = yMax;
+    BeizerCurve bs(points);
+    std::vector<Point> bezierPoints = bs.calculateBezier();
+
+    if (bezierPoints.size() < 2) {
+        return;
+    }
+    addCurveLines(bezierPoints);
+    emit shapesUpdated();
 }
-void OpenGLWindow::drawRegion(QVector<GLfloat>& vertices, QVector<GLfloat>& colors)
+
+void OpenGLWindow::createFill(std::vector<float>squareVertices)
 {
-    vertices << x_min << y_min;
-    vertices << x_max << y_min;
-    vertices << x_max << y_max;
-    vertices << x_max << y_min;
-    vertices << x_max << y_max;
-    vertices << x_min << y_max;
-    vertices << x_min << y_min;
-    vertices << x_min << y_max;
+    
+    int i = 0;
+    while (i < squareVertices.size()) {
+        std::vector < float>qv;
+        qv.push_back(squareVertices[i]);
+        i++;
+        qv.push_back(squareVertices[i]);
+        i++;
+        qv.push_back(squareVertices[i]);
+        i++;
+        qv.push_back(squareVertices[i]);
+        i++;
+        qv.push_back(squareVertices[i]);
+        i++;
+        qv.push_back(squareVertices[i]);
+        i++;
+        qv.push_back(squareVertices[i]);
+        i++;
+        qv.push_back(squareVertices[i]);
+        i++;
+        QVector3D fillColor(1.0f, 0.0f, 0.0f);
+        fillSquare(qv, fillColor);
 
-    for (int i = 0; i < 8; i++)colors << 0.0f << 1.0f << 1.0f;
+    }
+   
 }
+void OpenGLWindow::fillSquare(std::vector<float> qv, QVector3D fillColor)
+{
+    
 
+    if (qv.size() % 2 != 0) {
+        return;
+    }
+
+    for (size_t i = 0; i < qv.size(); i += 2) {
+        float x = qv[i];
+        float y = qv[i + 1];
+        vertices << x << y;
+        colors << fillColor.x() << fillColor.y() << fillColor.z();
+    }
+  
+    
+}
+void OpenGLWindow::addBSplineCurve(std::vector<Point> points)
+{
+    BSplineCurve bs(3);
+    std::vector<Point> bsplinePoints = bs.evaluate(points, 100);
+
+    if (bsplinePoints.size() < 2) {
+        return;
+    }
+    addCurveLines(bsplinePoints);
+    emit shapesUpdated();
+}
 
 void OpenGLWindow::initializeGL()
 {
@@ -266,44 +205,62 @@ void OpenGLWindow::initializeGL()
     Q_ASSERT(m_colAttr != -1);
     m_matrixUniform = mProgram->uniformLocation("matrix");
     Q_ASSERT(m_matrixUniform != -1);
-
 }
-void OpenGLWindow::addSplineCurve(std::vector<Point> mPoints)
+
+void OpenGLWindow::setupMatrix()
 {
+    QMatrix4x4 matrix;
+    matrix.ortho(-10.0f, 10.0f, -10.0f, 10.0f, 0.1f, 100.0f);
+    matrix.translate(0, 0, -2);
 
-    BeizerCurve sp(mPoints);
-    std::vector<Point> bezierPoints = sp.calculateBezier();
-
-    // Ensure that there are at leabezierpoints in the B-spline curve
-    if (bezierPoints.size() < 2) {
-        // Handle the case where there are not enough points
-        return;
-    }
-
-    // Create lines from the B-spline curve points
-    for (int i = 0; i < bezierPoints.size() - 1; i++) {
-        mLines.push_back(Line(bezierPoints[i], bezierPoints[i + 1]));
-    }
-
-    emit shapesUpdated();
-
-
+    mProgram->setUniformValue(m_matrixUniform, matrix);
 }
-void OpenGLWindow::addHermiteCurve(std::vector<Point> points)
+
+void OpenGLWindow::addClippingPolygonVertices(QVector<GLfloat>& vertices, QVector<GLfloat>& colors)
 {
-    HermiteCurve bs(points);
-    std::vector<Point> hermitePoints = bs.calculateHermite();
+    addShapeVertices(mClippingPolygon, vertices, colors, 1.0f, 1.0f, 0.0f);
+}
 
-    // Ensure that there are at least two points in the B-spline curve
-    if (hermitePoints.size() < 2) {
-        // Handle the case where there are not enough points
-        return;
+void OpenGLWindow::addPolygonsVertices(QVector<GLfloat>& vertices, QVector<GLfloat>& colors)
+{
+    for (int i = 0; i < mPolygons.size(); i++) {
+        addShapeVertices(mPolygons.at(i), vertices, colors, 1.0f, 1.0f, 1.0f);
     }
+}
 
-    // Create lines from the B-spline curve points
-    for (int i = 0; i < hermitePoints.size() - 1; i++) {
-        mLines.push_back(Line(hermitePoints[i], hermitePoints[i + 1]));
+void OpenGLWindow::addLinesVertices(QVector<GLfloat>& vertices, QVector<GLfloat>& colors)
+{
+    addShapeVertices(mLines, vertices, colors, 0.0f, 1.0f, 1.0f);
+}
+
+void OpenGLWindow::addShapeVertices(Shape shape, QVector<GLfloat>& vertices, QVector<GLfloat>& colors, float red, float green, float blue)
+{
+    std::vector<Line> lines = shape.getShape();
+    for (int j = 0; j < lines.size(); j++) {
+        vertices << lines.at(j).p1().x() << lines.at(j).p1().y();
+        vertices << lines.at(j).p2().x() << lines.at(j).p2().y();
+        colors << red << green << blue;
+        colors << red << green << blue;
     }
+}
 
-    emit shapesUpdated();
+void OpenGLWindow::addCurveLines(const std::vector<Point>& points)
+{
+    for (int i = 0; i < points.size() - 1; i++) {
+        mLines.push_back(Line(points[i], points[i + 1]));
+    }
+}
+
+void OpenGLWindow::drawVertices(const QVector<GLfloat>& vertices, const QVector<GLfloat>& colors)
+{
+    glVertexAttribPointer(m_posAttr, 2, GL_FLOAT, GL_FALSE, 0, vertices.data());
+    glVertexAttribPointer(m_colAttr, 3, GL_FLOAT, GL_FALSE, 0, colors.data());
+
+    glEnableVertexAttribArray(m_posAttr);
+    glEnableVertexAttribArray(m_colAttr);
+
+    glDrawArrays(GL_LINES, 0, vertices.size() / 2);
+
+    glDisableVertexAttribArray(m_colAttr);
+    glDisableVertexAttribArray(m_posAttr);
 }

@@ -48,10 +48,14 @@ void SimpleDDA::drawLineBySimpleDDA(Line& l, vector<float>& pixelVertices)
     }
     while (x1 < x2)
     {
-        pixelVertices.push_back((round(x1), round(y1)));
-        pixelVertices.push_back((round(x1) + 1, round(y1)));
-        pixelVertices.push_back((round(x1) + 1, round(y1) + 1));
-        pixelVertices.push_back((round(x1), round(y1) + 1));
+        pixelVertices.push_back(round(x1));
+        pixelVertices.push_back(round(y1));
+        pixelVertices.push_back(round(x1) + 1);
+        pixelVertices.push_back(round(y1));
+        pixelVertices.push_back(round(x1) + 1);
+        pixelVertices.push_back(round(y1) + 1);
+        pixelVertices.push_back(round(x1));
+        pixelVertices.push_back(round(y1) + 1);
         x1 = deltaX + x1;
         y1 = deltaY + y1;
     }

@@ -33,8 +33,10 @@ private slots:
     void addPolygon();
     void clipPolygon();
     void addGrid();
-    void splineCurve();
+    void beizerCurve();
     void hermiteCurve();
+    void addBSpline();
+
 private:
     QWidget* mCentralWidget;
     QWidget* mGridLayoutWidget;
@@ -48,6 +50,7 @@ private:
     QPushButton* mPushButton7;
     QPushButton* mPushButton8;
     QPushButton* mPushButton9;
+    QPushButton* mPushButton10;
     QHBoxLayout* mHorizontalLayout10;
     QVBoxLayout* mVerticalLayout3;
     QVBoxLayout* mVerticalLayout5;

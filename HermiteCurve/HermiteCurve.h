@@ -27,5 +27,3 @@ private:
 extern HERMITECURVE_API int nHermiteCurve;
 
 HERMITECURVE_API int fnHermiteCurve(void);
-
-

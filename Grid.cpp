@@ -8,7 +8,7 @@ Grid::Grid()
 
 
 
-Grid::Grid(QVector<GLfloat> vertices, QVector<GLfloat> colors, int gridSize)
+Grid::Grid(QVector<GLfloat>& vertices, QVector<GLfloat>& colors, int gridSize)
 {
     drawGrid(vertices, colors, gridSize);
 }
@@ -17,7 +17,7 @@ Grid::~Grid()
 {
 }
 
-void Grid::drawGrid(QVector<GLfloat> vertices, QVector<GLfloat> colors, int gridSize) {
+void Grid::drawGrid(QVector<GLfloat>& vertices, QVector<GLfloat>& colors, int gridSize) {
     //const float gridSize = 8.0f;  // Adjust the grid size as needed
     const float step = 1.0f;
 
@@ -52,3 +52,4 @@ void Grid::drawGrid(QVector<GLfloat> vertices, QVector<GLfloat> colors, int grid
         colors.push_back(1.0f);
         colors.push_back(1.0f);
     }
+}

@@ -22,9 +22,6 @@ public:
 	//void drawGrid(vector<float>& vertices, vector<float>& colors);
 	void drawLineBySimpleDDA(Line& line, vector<float>& mVertices);
 
-public:
-	vector<float> mVertices;
-	vector<float> mColors;
 };
 
 extern SIMPLEDDA_API int nSimpleDDA;

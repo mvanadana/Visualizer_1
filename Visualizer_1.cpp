@@ -49,13 +49,13 @@ void Visualizer_1::setupUi()
 
     mHorizontalLayout7->addWidget(mPushButton5);
     mGridLayout->addLayout(mHorizontalLayout7, 2, 0, 1, 1);
-   //Tab1
-   // mTabWidget = new QTabWidget(mGridLayoutWidget);
-    //mGridLayout->addWidget(mTabWidget, 0, 1, 1, 1);
+    //Tab1
+    // mTabWidget = new QTabWidget(mGridLayoutWidget);
+     //mGridLayout->addWidget(mTabWidget, 0, 1, 1, 1);
 
 
 
-    // Third, show mHorizontalLayout10
+     // Third, show mHorizontalLayout10
     mHorizontalLayout10 = new QHBoxLayout();
     mHorizontalLayout10->setSpacing(6);
 
@@ -124,9 +124,15 @@ void Visualizer_1::setupUi()
     mGridLayout->addLayout(mHorizontalLayout8, 4, 0, 1, 1);
 
 
-    mPushButton8 = new QPushButton("Spline Curve", mGridLayoutWidget);
+    mPushButton8 = new QPushButton("Bezier Curve", mGridLayoutWidget);
 
     mHorizontalLayout5->addWidget(mPushButton8);
+
+    mVerticalLayout5->addLayout(mHorizontalLayout5);
+
+    mPushButton10 = new QPushButton("BSpline Curve", mGridLayoutWidget);
+
+    mHorizontalLayout5->addWidget(mPushButton10);
 
     mVerticalLayout5->addLayout(mHorizontalLayout5);
 
@@ -146,8 +152,9 @@ void Visualizer_1::setupUi()
     connect(mPushButton5, &QPushButton::clicked, this, &Visualizer_1::addLine);
     connect(mPushButton7, &QPushButton::clicked, this, &Visualizer_1::addGrid);
     connect(mPushButton6, &QPushButton::clicked, this, &Visualizer_1::clipPolygon);
-    connect(mPushButton8, &QPushButton::clicked, this, &Visualizer_1::splineCurve);
+    connect(mPushButton8, &QPushButton::clicked, this, &Visualizer_1::beizerCurve);
     connect(mPushButton9, &QPushButton::clicked, this, &Visualizer_1::hermiteCurve);
+    connect(mPushButton10, &QPushButton::clicked, this, &Visualizer_1::addBSpline);
     setCentralWidget(mCentralWidget);
 }
 void Visualizer_1::addPoints()
@@ -198,7 +205,7 @@ void Visualizer_1::addLine()
 
     Point p1(x, y);
     Point p2(x1, y1);
-    Line line(p1, p2);  
+    Line line(p1, p2);
     mOpenGLWidget->addLines(line);
     mListWidget3->clear();
     mPoints.clear();
@@ -247,9 +254,9 @@ void Visualizer_1::addGrid()
     mListWidget3->clear();
     mPoints.clear();
 }
-void Visualizer_1::splineCurve()
+void Visualizer_1::beizerCurve()
 {
-    mOpenGLWidget->addSplineCurve(mPoints);
+    mOpenGLWidget->addBezierCurve(mPoints);
     mListWidget3->clear();
     mPoints.clear();
 }
@@ -263,6 +270,20 @@ void Visualizer_1::hermiteCurve()
     }
     mOpenGLWidget->addHermiteCurve(mPoints);
 
+    mListWidget3->clear();
+    mPoints.clear();
+
+}
+void Visualizer_1::addBSpline()
+{
+    // Add a Bezier curve to the OpenGL window
+    if (mPoints.size() != 4) {
+        QMessageBox::warning(this, "Error", "Four points are needed to create a BSpline curve.");
+        return;
+    }
+
+    // Add Bezier curve to the OpenGL window
+    mOpenGLWidget->addBSplineCurve(mPoints);
     mListWidget3->clear();
     mPoints.clear();
 
