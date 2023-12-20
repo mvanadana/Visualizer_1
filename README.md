@@ -18,3 +18,4 @@ OpenGL
 #### Initialize the OpenGL window and use the provided functionalities (drawing shapes, applying algorithms).
 
 has context menu
+![grid](https://github.com/mvanadana/Visualizer_1/assets/149364066/7a98f10b-5470-4a57-8ed7-ddf7ccfd04aa)
