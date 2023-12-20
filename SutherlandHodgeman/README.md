@@ -14,3 +14,6 @@ Ensure the SutherlandHodgman library or source files are available.
 Create an instance of the SutherlandHodgman class.
 Clipping a Polygon
 Use the clipPolygon method, providing the coordinates of the polygon vertices and the clipping window.
+![region](https://github.com/mvanadana/Visualizer_1/assets/149364066/47286b91-54a6-43d6-a96f-fe2e7e991ad4)
+![polygon](https://github.com/mvanadana/Visualizer_1/assets/149364066/f0147cd0-5dfb-41cc-918e-16f5b5718558)
+![clipping'](https://github.com/mvanadana/Visualizer_1/assets/149364066/d51d3198-195f-4d70-bdc6-ba22eccc1443)
