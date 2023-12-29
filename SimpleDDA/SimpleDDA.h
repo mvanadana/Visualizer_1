@@ -12,25 +12,18 @@
 #include "pch.h"
 
 using namespace std;
-class SIMPLEDDA_API SimpleDDA {
+class SIMPLEDDA_API SimpleDDA
+{
 
 public:
-	SimpleDDA();
-	~SimpleDDA();
+    SimpleDDA();
+    ~SimpleDDA();
 
 public:
-	//void drawGrid(vector<float>& vertices, vector<float>& colors);
-	void drawLineBySimpleDDA(Line& line, vector<float>& mVertices);
-
+    // void drawGrid(vector<float>& vertices, vector<float>& colors);
+    void drawLineBySimpleDDA(Line& line, vector<float>& mVertices);
 };
 
 extern SIMPLEDDA_API int nSimpleDDA;
 
 SIMPLEDDA_API int fnSimpleDDA(void);
-
-
-
-#pragma once
-#include "Line.h"
-
-
