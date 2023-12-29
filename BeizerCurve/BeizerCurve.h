@@ -5,24 +5,26 @@
 // BEIZERCURVE_API functions as being imported from a DLL, whereas this DLL sees symbols
 // defined with this macro as being exported.
 
-
 // This class is exported from the dll
 #pragma once
-#include<Point.h>
-#include<vector>
+#include <Point.h>
+#include <vector>
 #include "pch.h"
-class BEIZERCURVE_API BeizerCurve {
+class BEIZERCURVE_API BeizerCurve
+{
 public:
-	BeizerCurve(void);
+    BeizerCurve(void);
 
 public:
-	BeizerCurve(std::vector<Point> points);
-	~BeizerCurve();
-	std::vector<Point> calculateBezier();
+    BeizerCurve(const std::vector<Point>& points);
+    ~BeizerCurve();
+    std::vector<Point> calculateBezier();
+
 private:
-	Point evaluateBezier(double t);
+    Point evaluateBezier(double t);
+
 private:
-	std::vector<Point> mControlPoints;
+    std::vector<Point> mControlPoints;
 };
 
 extern BEIZERCURVE_API int nBeizerCurve;
