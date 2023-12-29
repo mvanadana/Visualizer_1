@@ -5,7 +5,6 @@
 // SUTHERLANDHODGEMAN_API functions as being imported from a DLL, whereas this DLL sees symbols
 // defined with this macro as being exported.
 
-
 // This class is exported from the dll
 #pragma once
 #include "Line.h"
@@ -13,27 +12,26 @@
 #include "Point.h"
 
 #include "pch.h"
-class SUTHERLANDHODGEMAN_API SutherlandHodgeman {
+class SUTHERLANDHODGEMAN_API SutherlandHodgeman
+{
 public:
-	SutherlandHodgeman(void);
+    SutherlandHodgeman(void);
 
 public:
-	SutherlandHodgeman(Shape region, Shape polygon);
-	~SutherlandHodgeman();
-	Shape getClippedPolygon();
+    SutherlandHodgeman(const Shape& region, const Shape& polygon);
+    ~SutherlandHodgeman();
+    Shape getClippedPolygon();
 
 private:
-	void clipAlongLine(Line l);
-	double xIntersect(Line l1, Line l2);
-	double yIntersect(Line l1, Line l2);
+    void clipAlongLine(Line l);
+    double xIntersect(Line l1, Line l2);
+    double yIntersect(Line l1, Line l2);
 
 private:
-	Shape mPolygon;
-	Shape mRegion;
+    Shape mPolygon;
+    Shape mRegion;
 };
 
 extern SUTHERLANDHODGEMAN_API int nSutherlandHodgeman;
 
 SUTHERLANDHODGEMAN_API int fnSutherlandHodgeman(void);
-
-
