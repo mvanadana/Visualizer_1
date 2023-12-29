@@ -1,7 +1,7 @@
 #include "pch.h"
 #include "Line.h"
 
-Line::Line(Point p1, Point p2)
+Line::Line(const Point& p1, const Point& p2)
     : mP1(p1),
     mP2(p2)
 {
@@ -14,25 +14,24 @@ Line::Line(const Line& other)
 }
 Line::Line()
 {
-
 }
 Line::~Line()
 {
 }
 
-Point& Line::p1()
+const Point& Line::p1() const
 {
     return mP1;
 }
 
-Point& Line::p2()
+const Point& Line::p2() const
 {
     return mP2;
 }
 
 Line& Line::operator=(const Line& other)
 {
-    if (this != &other)  // Check for self-assignment
+    if (this != &other) // Check for self-assignment
     {
         // Copy data members from 'other' to 'this'
         mP1 = other.mP1;
