@@ -5,9 +5,8 @@
 #include "framework.h"
 #include "SimpleDDA.h"
 
-
 // This is an example of an exported variable
-SIMPLEDDA_API int nSimpleDDA=0;
+SIMPLEDDA_API int nSimpleDDA = 0;
 
 // This is an example of an exported function.
 SIMPLEDDA_API int fnSimpleDDA(void)
@@ -17,12 +16,10 @@ SIMPLEDDA_API int fnSimpleDDA(void)
 
 SimpleDDA::SimpleDDA()
 {
-
 }
 
 SimpleDDA::~SimpleDDA()
 {
-
 }
 
 void SimpleDDA::drawLineBySimpleDDA(Line& l, vector<float>& pixelVertices)
@@ -59,6 +56,4 @@ void SimpleDDA::drawLineBySimpleDDA(Line& l, vector<float>& pixelVertices)
         x1 = deltaX + x1;
         y1 = deltaY + y1;
     }
-
-
 }
