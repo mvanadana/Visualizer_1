@@ -9,9 +9,9 @@ public:
     Point();
     ~Point();
 
-    double x();
-    double y();
-    double z();
+    double x() const;
+    double y() const;
+    double z() const;
     void setX(double x);
     void setY(double y);
     void setZ(double z);
