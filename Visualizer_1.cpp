@@ -5,6 +5,7 @@
 
 Visualizer_1::Visualizer_1(QWindow* parent) : QMainWindow(nullptr)
 {
+    // Initialize the UI elements and connect signals
     setupUi();
 
     connect(mOpenGLWidget, SIGNAL(shapesUpdated()), mOpenGLWidget, SLOT(update()));
@@ -15,6 +16,8 @@ Visualizer_1::~Visualizer_1()
 
 void Visualizer_1::setupUi()
 {
+    // Set up the user interface with various widgets and layouts
+
     resize(867, 702);
     mCentralWidget = new QWidget(this);
     mGridLayoutWidget = new QWidget(mCentralWidget);
@@ -49,11 +52,7 @@ void Visualizer_1::setupUi()
 
     mHorizontalLayout7->addWidget(mPushButton5);
     mGridLayout->addLayout(mHorizontalLayout7, 2, 0, 1, 1);
-    //Tab1
-    // mTabWidget = new QTabWidget(mGridLayoutWidget);
-     //mGridLayout->addWidget(mTabWidget, 0, 1, 1, 1);
-
-
+   
 
      // Third, show mHorizontalLayout10
     mHorizontalLayout10 = new QHBoxLayout();
@@ -145,6 +144,8 @@ void Visualizer_1::setupUi()
     QLabel* label = new QLabel("SutherlandHodgman and SimpleDDA", mGridLayoutWidget);
     label->setAlignment(Qt::AlignLeading | Qt::AlignHCenter | Qt::AlignVCenter);
 
+    // Connect UI buttons to respective slots/functions
+
     mGridLayout->addWidget(label, 0, 0, 1, 1);
     connect(mPushButton2, &QPushButton::clicked, this, &Visualizer_1::addPoints);
     connect(mPushButton4, &QPushButton::clicked, this, &Visualizer_1::addRegion);
@@ -157,8 +158,13 @@ void Visualizer_1::setupUi()
     connect(mPushButton10, &QPushButton::clicked, this, &Visualizer_1::addBSpline);
     setCentralWidget(mCentralWidget);
 }
+
+// Functions to handle button clicks and perform operations
+
 void Visualizer_1::addPoints()
 {
+    // Adds user-defined points to the OpenGL window
+
     double xValue = mDoubleSpinBox5->value();
     double yValue = mDoubleSpinBox6->value();
 
