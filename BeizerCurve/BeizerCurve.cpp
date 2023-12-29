@@ -4,10 +4,11 @@
 #include "pch.h"
 #include "framework.h"
 #include "BeizerCurve.h"
+#include <iostream>
 
 
 // This is an example of an exported variable
-BEIZERCURVE_API int nBeizerCurve=0;
+BEIZERCURVE_API int nBeizerCurve = 0;
 
 // This is an example of an exported function.
 BEIZERCURVE_API int fnBeizerCurve(void)
@@ -21,7 +22,7 @@ BeizerCurve::BeizerCurve()
     return;
 }
 
-BeizerCurve::BeizerCurve(std::vector<Point> points) : mControlPoints(points)
+BeizerCurve::BeizerCurve(const std::vector<Point> &points) : mControlPoints(points)
 {
 }
 BeizerCurve::~BeizerCurve()
