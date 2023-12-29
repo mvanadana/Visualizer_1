@@ -7,10 +7,8 @@
 
 #include <vector>
 
-
-
 // This is an example of an exported variable
-HERMITECURVE_API int nHermiteCurve=0;
+HERMITECURVE_API int nHermiteCurve = 0;
 
 // This is an example of an exported function.
 HERMITECURVE_API int fnHermiteCurve(void)
@@ -24,7 +22,7 @@ HermiteCurve::HermiteCurve()
     return;
 }
 
-HermiteCurve::HermiteCurve(std::vector<Point> points) : mControlPoints(points)
+HermiteCurve::HermiteCurve(const std::vector<Point>& points) : mControlPoints(points)
 {
 }
 
@@ -35,7 +33,8 @@ HermiteCurve::~HermiteCurve()
 std::vector<Point> HermiteCurve::calculateHermite()
 {
     std::vector<Point> result;
-    for (double t = 0; t <= 1; t += 0.1) {
+    for (double t = 0; t <= 1; t += 0.1)
+    {
         Point r = evaluateHermite(t);
         result.push_back(r);
     }
@@ -57,4 +56,3 @@ Point HermiteCurve::evaluateHermite(double t)
 
     return Point(x, y);
 }
-
