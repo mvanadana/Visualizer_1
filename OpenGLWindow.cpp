@@ -24,9 +24,11 @@ OpenGLWindow::~OpenGLWindow()
 {
     reset();
 }
-
 void OpenGLWindow::reset()
 {
+
+    // Clean up resources and disconnect signals
+
     makeCurrent();
     delete mProgram;
     mProgram = nullptr;
@@ -40,8 +42,11 @@ void OpenGLWindow::reset()
     QObject::disconnect(mContextWatchConnection);
 }
 
+
 void OpenGLWindow::paintGL()
 {
+    // Setup OpenGL rendering environment and draw shapes
+
     glClear(GL_COLOR_BUFFER_BIT);
 
     mProgram->bind();
@@ -60,6 +65,8 @@ void OpenGLWindow::paintGL()
 
 void OpenGLWindow::clipPolygons()
 {
+    // Clip polygons using Sutherland-Hodgman algorithm
+
     for (int i = 0; i < mPolygons.size(); i++) {
         SutherlandHodgeman sh(mClippingPolygon, mPolygons.at(i));
         mPolygons.at(i) = sh.getClippedPolygon();
@@ -70,18 +77,23 @@ void OpenGLWindow::clipPolygons()
 
 void OpenGLWindow::addClippingPolygon(Shape* s)
 {
+    // Add clipping polygon and notify about shape updates
+
     mClippingPolygon = *s;
     emit shapesUpdated();
 }
 
 void OpenGLWindow::addPolygons(Shape* s)
 {
+    //add polygon shape
     mPolygons.push_back(*s);
     emit shapesUpdated();
 }
 
 void OpenGLWindow::addLines(Line line)
 {
+    //add line using SimpleDDA Algorithm
+
     SimpleDDA sdd;
     sdd.drawLineBySimpleDDA(line, mPixelVertices);
     createFill(mPixelVertices);
@@ -90,30 +102,37 @@ void OpenGLWindow::addLines(Line line)
 }
 void OpenGLWindow::drawGrid(int gridsize)
 {
+    // Drawing grid using Grid class
     mGridSize = gridsize;
     Grid grid(vertices, colors, mGridSize);
     emit shapesUpdated();
 }
 void OpenGLWindow::addHermiteCurve(std::vector<Point> points)
 {
+    //adding points from user and creating a HermiteCurve Object from it
     HermiteCurve bs(points);
     std::vector<Point> hermitePoints = bs.calculateHermite();
 
+    // if points size is less than two , return without creating curve
     if (hermitePoints.size() < 2) {
         return;
     }
+    //passing hermite points fro drawing curves
     addCurveLines(hermitePoints);
     emit shapesUpdated();
 }
 
 void OpenGLWindow::addBezierCurve(std::vector<Point> points)
 {
+    //adding points from user and creating a BeizerCurve Object from it
     BeizerCurve bs(points);
     std::vector<Point> bezierPoints = bs.calculateBezier();
 
+    // if points size is less than two , return without creating curve
     if (bezierPoints.size() < 2) {
         return;
     }
+    //passing bezier points for drawing curves
     addCurveLines(bezierPoints);
     emit shapesUpdated();
 }
@@ -177,6 +196,7 @@ void OpenGLWindow::addBSplineCurve(std::vector<Point> points)
 
 void OpenGLWindow::initializeGL()
 {
+    // Initialize OpenGL context and shaders
     static const char* vertexShaderSource =
         "attribute highp vec4 posAttr;\n"
         "attribute lowp vec4 colAttr;\n"
@@ -209,6 +229,8 @@ void OpenGLWindow::initializeGL()
 
 void OpenGLWindow::setupMatrix()
 {
+    // Set up matrix for transformation
+
     QMatrix4x4 matrix;
     matrix.ortho(-10.0f, 10.0f, -10.0f, 10.0f, 0.1f, 100.0f);
     matrix.translate(0, 0, -2);
@@ -218,11 +240,15 @@ void OpenGLWindow::setupMatrix()
 
 void OpenGLWindow::addClippingPolygonVertices(QVector<GLfloat>& vertices, QVector<GLfloat>& colors)
 {
+    // Add clipping polygon vertices
+
     addShapeVertices(mClippingPolygon, vertices, colors, 1.0f, 1.0f, 0.0f);
 }
 
 void OpenGLWindow::addPolygonsVertices(QVector<GLfloat>& vertices, QVector<GLfloat>& colors)
 {
+    // Add vertices for polygons
+
     for (int i = 0; i < mPolygons.size(); i++) {
         addShapeVertices(mPolygons.at(i), vertices, colors, 1.0f, 1.0f, 1.0f);
     }
@@ -230,11 +256,15 @@ void OpenGLWindow::addPolygonsVertices(QVector<GLfloat>& vertices, QVector<GLflo
 
 void OpenGLWindow::addLinesVertices(QVector<GLfloat>& vertices, QVector<GLfloat>& colors)
 {
+    // Add vertices for lines
+
     addShapeVertices(mLines, vertices, colors, 0.0f, 1.0f, 1.0f);
 }
 
 void OpenGLWindow::addShapeVertices(Shape shape, QVector<GLfloat>& vertices, QVector<GLfloat>& colors, float red, float green, float blue)
 {
+    // Add vertices and colors for shapes
+
     std::vector<Line> lines = shape.getShape();
     for (int j = 0; j < lines.size(); j++) {
         vertices << lines.at(j).p1().x() << lines.at(j).p1().y();
@@ -246,6 +276,7 @@ void OpenGLWindow::addShapeVertices(Shape shape, QVector<GLfloat>& vertices, QVe
 
 void OpenGLWindow::addCurveLines(const std::vector<Point>& points)
 {
+    // Add lines to draw curves
     for (int i = 0; i < points.size() - 1; i++) {
         mLines.push_back(Line(points[i], points[i + 1]));
     }
@@ -253,6 +284,7 @@ void OpenGLWindow::addCurveLines(const std::vector<Point>& points)
 
 void OpenGLWindow::drawVertices(const QVector<GLfloat>& vertices, const QVector<GLfloat>& colors)
 {
+    // Draw vertices using OpenGL
     glVertexAttribPointer(m_posAttr, 2, GL_FLOAT, GL_FALSE, 0, vertices.data());
     glVertexAttribPointer(m_colAttr, 3, GL_FLOAT, GL_FALSE, 0, colors.data());
 
