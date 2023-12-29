@@ -5,23 +5,22 @@
 // BSPLINECURVE_API functions as being imported from a DLL, whereas this DLL sees symbols
 // defined with this macro as being exported.
 
-
 // This class is exported from the dll
 #include <vector>
 #include <utility>
 #include "Point.h"
 #include "pch.h"
-class BSPLINECURVE_API BSplineCurve {
+class BSPLINECURVE_API BSplineCurve
+{
 public:
-	BSplineCurve(void);
+    BSplineCurve(void);
     BSplineCurve(int degree);
-    std::vector<Point> evaluate( std::vector<Point>& control_points, float t);
+    std::vector<Point> evaluate(const std::vector<Point>& control_points, float t);
 
 private:
     int degree_;
     std::vector<float> generateUniformKnots(int num_control_points);
     float bSplineBasis(int i, int k, float t, const std::vector<float>& knots);
-   
 };
 
 extern BSPLINECURVE_API int nBSplineCurve;
