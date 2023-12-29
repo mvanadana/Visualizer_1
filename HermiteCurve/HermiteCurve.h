@@ -5,23 +5,25 @@
 // HERMITECURVE_API functions as being imported from a DLL, whereas this DLL sees symbols
 // defined with this macro as being exported.
 
-
 // This class is exported from the dll
-#include<Point.h>
-#include<vector>
+#include <Point.h>
+#include <vector>
 #include "pch.h"
-class HERMITECURVE_API HermiteCurve {
+class HERMITECURVE_API HermiteCurve
+{
 public:
-	HermiteCurve(void);
+    HermiteCurve(void);
 
 public:
-	HermiteCurve(std::vector<Point> points);
-	~HermiteCurve();
-	std::vector<Point> calculateHermite();
+    HermiteCurve(const std::vector<Point>& points);
+    ~HermiteCurve();
+    std::vector<Point> calculateHermite();
+
 private:
-	Point evaluateHermite(double t);
+    Point evaluateHermite(double t);
+
 private:
-	std::vector<Point> mControlPoints;
+    std::vector<Point> mControlPoints;
 };
 
 extern HERMITECURVE_API int nHermiteCurve;
